@@ -1,0 +1,74 @@
+version : '3'
+
+networks:
+  docker_network:
+    driver: bridge
+
+volumes:
+  wp_vol:
+    name: wp_vol
+    driver_opts:
+      type: none
+      device: /home/svos/data/wp
+      o: bind
+  db_vol:
+    name: db_vol
+    driver_opts:
+      type: none
+      device: /home/svos/data/db
+      o: bind
+
+services:
+  mariadb:
+    container_name: mariadb
+    build: ./requirements/mariadb
+    env_file:
+      - .env
+    networks:
+      - docker_network
+    volumes:
+      - db_vol:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysql"]
+      interval: 3s
+      timeout: 6s
+      retries: 3
+      start_period: 3s
+    restart: always
+
+  wp:
+    container_name: wp
+    build: ./requirements/wordpress
+    env_file:
+      - .env
+    networks:
+      - docker_network
+    volumes:
+      - wp_vol:/var/www/html
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wp", "--info"]
+      interval: 3s
+      timeout: 6s
+      retries: 3
+      start_period: 3s
+    restart: always
+
+  nginx:
+    container_name: nginx
+    build: ./requirements/nginx
+    ports:
+      - "443:443"
+    env_file:
+      - .env
+    networks:
+      - docker_network
+    depends_on:
+      wp:
+        condition: service_healthy
+    volumes:
+      - wp_vol:/var/www/html
+    restart: always
+
