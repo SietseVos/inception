@@ -1,11 +1,12 @@
 #!/bin/bash
-mysqld --initialize --datadir=/var/lib/mysql
-cd /var/lib/mysql
-service mysql start
+#mysqld --initialize --datadir=/var/lib/mysql
+#cd /var/lib/mysql
+#service mysql start
 #service mysql stop
 #/etc/init.d/mysql stop
 #mysql_install_db --defaults-file=/root/.my.cnf
 
+mysql_install_db --user=mysql --datadir=/var/lib/mysql
 
 #echo "CREATE DATABASE $DB_NAME;" > init.sql
 #echo "CREATE USER '$DB_USER'@'%' IDENTIFIED BY '$DB_PASS';" >> init.sql
@@ -29,19 +30,35 @@ service mysql start
 #mariadb --user=root -e "FLUSH PRIVILEGES;"
 
 echo "doing mysql commands"
-mariadb --user=root -e "CREATE DATABASE cool_db_name;"
-mariadb --user=root -e "CREATE USER 'weird_user'@'%' IDENTIFIED BY 'pass123';"
+#mariadb --user=root -e "FLUSH PRIVILEGES;"
+
+#mariadb --user=root -e "CREATE DATABASE cool_db_name;"
+#echo 1
+#mariadb --user=root -e "CREATE USER 'weird_user'@'%' IDENTIFIED BY 'pass123';"
 #mariadb --user=root -e "SET PASSWORD FOR 'root'@'localhost' = PASSWORD('$DB_PASS');"
 #mariadb --user=root -e "CREATE USER 'root'@'localhost' IDENTIFIED BY '$DB_PASS';"
-mariadb --user=root -e "GRANT ALL ON *.* TO 'weird_user'@'%' IDENTIFIED BY 'pass123';"
+#echo 2
+#mariadb --user=root -e "GRANT ALL ON *.* TO 'weird_user'@'%' IDENTIFIED BY 'pass123';"
 #mariadb --user=root -e "ALTER USER 'root'@'localhost' IDENTIFIED BY 'pass123';"
 #mariadb --user=root -e "UPDATE mysql.user SET plugin = '' WHERE user = 'root' AND host = 'localhost';"
 #mariadb --user=root -e "GRANT ALL ON *.* TO 'root'@'%' IDENTIFIED BY '$DB_PASS';"
-mariadb --user=root -e "FLUSH PRIVILEGES;"
+#echo 3
+#mariadb --user=root -e "FLUSH PRIVILEGES;"
 #echo "done with init queries"
+#echo 4
 #service mysql stop
+#mysqladmin shutdown
 
-mysqladmin shutdown
+
+{
+echo "FLUSH PRIVILEGES;"
+echo "CREATE DATABASE $DB_NAME;"
+echo "CREATE USER '$DB_USER'@'%' IDENTIFIED BY '$DB_PASS';"
+echo "GRANT ALL ON *.* TO '$DB_USER'@'%' IDENTIFIED BY '$DB_PASS';"
+echo "FLUSH PRIVILEGES;"
+} | mysqld --bootstrap
+
+
 
 echo "starting mysqld"
 

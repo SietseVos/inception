@@ -9,13 +9,13 @@ volumes:
     name: wp_vol
     driver_opts:
       type: none
-      device: /home/svos/data/wp
+      device: /home/sietse/data/wp
       o: bind
   db_vol:
     name: db_vol
     driver_opts:
       type: none
-      device: /home/svos/data/db
+      device: /home/sietse/data/db
       o: bind
 
 services:
@@ -49,7 +49,7 @@ services:
       mariadb:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "wp", "--info"]
+      test: ["CMD", "wp-cli.phar", "--info"]
       interval: 3s
       timeout: 6s
       retries: 3

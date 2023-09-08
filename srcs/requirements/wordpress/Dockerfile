@@ -5,12 +5,12 @@ RUN apt upgrade -y
 RUN apt-get install -y php7.3
 RUN apt-get install -y php7.3-fpm
 RUN apt install -y curl
-RUN apt-get install -y php-mysql
+RUN apt-get install -y php7.3-mysql
 RUN apt install -y mariadb-client
 RUN mkdir /run/php
 RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
-RUN chmod 777 wp-cli.phar
-RUN mv wp-cli.phar /usr/local/bin/wp
+RUN chmod +x wp-cli.phar
+RUN mv wp-cli.phar /usr/local/bin/wp-cli.phar
 
 
 #COPY conf/wp-config.php /wp-config.php
