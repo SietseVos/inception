@@ -1,0 +1,1 @@
+The goal of this project was to setup wordpress, mariadb and nginx all in seperate containers. Then we had to access wordpress via the web and change the website to prove that wordpress was connected to mariadb.
